@@ -42,6 +42,9 @@ package landUseDataAnalysis;
 public class LandUseDataLineItem {
 	
 	// Creating fields for each column of the csv data file.
+	// Please note: All fields designated as ints below will be
+	// converted from Strings using a helper method in the 
+	// constructor.
 	private int sortOrder;
 	private String region;
 	private String regionOrState;
@@ -63,40 +66,77 @@ public class LandUseDataLineItem {
 	private int landInUrbanAreas;
 	private int otherLand;
 	
-	// Constructor includes all fields from csv data as well.
-	public LandUseDataLineItem(int sortOrder, String region, 
+	// Constructor assigns values to fields.
+	// Number Strings will be converted to ints here. I'm not 
+	// sure if this is the best place to do so????
+	public LandUseDataLineItem(String sortOrder, String region, 
 								String regionOrState, String year, 
-								int totalLand, int totalCropland, 
-								int croplandUsedForCrops, int croplandUsedForPasture, 
-								int croplandIdled, int grasslandPastureAndRange, 
-								int forestUseLand, int forestUseLandGrazed, 
-								int forestUseLandNotGrazed, int allSpecialUsesOfLand, 
-								int landInRuralTransportationFacilities,
-								int landInRuralParksAndWildlifeAreas, 
-								int landInDefenseAndIndustrialAreas, 
-								int farmsteadsRoadsAndMiscellaneousFarmland, 
-								int landInUrbanAreas, int otherLand) {
-		this.sortOrder = sortOrder;
+								String totalLand, String totalCropland, 
+								String croplandUsedForCrops, String croplandUsedForPasture, 
+								String croplandIdled, String grasslandPastureAndRange, 
+								String forestUseLand, String forestUseLandGrazed, 
+								String forestUseLandNotGrazed, String allSpecialUsesOfLand, 
+								String landInRuralTransportationFacilities,
+								String landInRuralParksAndWildlifeAreas, 
+								String landInDefenseAndIndustrialAreas, 
+								String farmsteadsRoadsAndMiscellaneousFarmland, 
+								String landInUrbanAreas, String otherLand) {
+		this.sortOrder = convertStringToInt(sortOrder);
 		this.region = region;
 		this.regionOrState = regionOrState;
 		this.year = year;
-		this.totalLand = totalLand;
-		this.totalCropland = totalCropland;
-		this.croplandUsedForCrops = croplandUsedForCrops;
-		this.croplandUsedForPasture = croplandUsedForPasture;
-		this.croplandIdled = croplandIdled;
-		this.grasslandPastureAndRange = grasslandPastureAndRange;
-		this.forestUseLand = forestUseLand;
-		this.forestUseLandGrazed = forestUseLandGrazed;
-		this.forestUseLandNotGrazed = forestUseLandNotGrazed;
-		this.allSpecialUsesOfLand = allSpecialUsesOfLand;
-		this.landInRuralTransportationFacilities = landInRuralTransportationFacilities;
-		this.landInRuralParksAndWildlifeAreas = landInRuralParksAndWildlifeAreas;
-		this.landInDefenseAndIndustrialAreas = landInDefenseAndIndustrialAreas;
-		this.farmsteadsRoadsAndMiscellaneousFarmland = farmsteadsRoadsAndMiscellaneousFarmland;
-		this.landInUrbanAreas = landInUrbanAreas;
-		this.otherLand = otherLand;
+		this.totalLand = convertStringToInt(totalLand);
+		this.totalCropland = convertStringToInt(totalCropland);
+		this.croplandUsedForCrops = convertStringToInt(croplandUsedForCrops);
+		this.croplandUsedForPasture = convertStringToInt(croplandUsedForPasture);
+		this.croplandIdled = convertStringToInt(croplandIdled);
+		this.grasslandPastureAndRange = convertStringToInt(grasslandPastureAndRange);
+		this.forestUseLand = convertStringToInt(forestUseLand);
+		this.forestUseLandGrazed = convertStringToInt(forestUseLandGrazed);
+		this.forestUseLandNotGrazed = convertStringToInt(forestUseLandNotGrazed);
+		this.allSpecialUsesOfLand = convertStringToInt(allSpecialUsesOfLand);
+		this.landInRuralTransportationFacilities = convertStringToInt(landInRuralTransportationFacilities);
+		this.landInRuralParksAndWildlifeAreas = convertStringToInt(landInRuralParksAndWildlifeAreas);
+		this.landInDefenseAndIndustrialAreas = convertStringToInt(landInDefenseAndIndustrialAreas);
+		this.farmsteadsRoadsAndMiscellaneousFarmland = convertStringToInt(farmsteadsRoadsAndMiscellaneousFarmland);
+		this.landInUrbanAreas = convertStringToInt(landInUrbanAreas);
+		this.otherLand = convertStringToInt(otherLand);
 		
+	}
+	
+	/** 
+	 * Converts String numbers to ints. Helper method.
+	 * 
+	 * It is necessary to convert these strings to ints
+	 * for future calculations in LandUseDataAnalysis class.
+	 * 
+	 * Using try/catch block as some String entries are "N.A."
+	 * These entries will trigger NumberFormatExceptions when 
+	 * attempting to ParseInt() on the String. The exception  
+	 * will be handled by returning int 0 in place of "N.A."
+	 * It is assumed that, for data analysis purposes, "N.A." 
+	 * will be equivalent to 0. THIS MAY BE AN INCORRECT 
+	 * ASSUMPTION. 
+	 * 
+	 * @param stringNumber, number of type String
+	 * @return int, String number converted to int
+	 */
+	public int convertStringToInt(String stringNumber) {
+		
+		// Try to convert String number to int.
+		// If successful, return int.
+		try {
+			int convertedInt = Integer.parseInt(stringNumber);
+			return convertedInt;
+		
+		// Catch NumberFormatException errors that will occur
+		// when "N.A." is encountered. In these cases, return the int 0.
+		// Again, the assumption is that 0 is equivalent to "N.A."
+		// and will allow for calculation/data analysis where 
+		// "N.A." will not.
+		} catch (NumberFormatException nfe) {
+			return 0; 
+		}
 	}
 	
 	/**
