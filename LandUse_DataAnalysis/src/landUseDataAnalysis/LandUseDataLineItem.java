@@ -36,8 +36,6 @@ package landUseDataAnalysis;
  * @param otherLand: int, miscellaneous land used for cemeteries, gold courses,
  * quarries, mines, etc.
  * 
- * @return No specific return value.
- * 
  * @author M Lafranchise
  * @email pulchrit@gmail.com
  */
@@ -101,83 +99,162 @@ public class LandUseDataLineItem {
 		
 	}
 	
-	// Getter methods for each field of csv data.
+	/**
+	 * Gets Sort Order for line item.
+	 * @return int, Sort Order
+	 */
 	public int getSortOrder() {
 		return sortOrder;
 	}
 	
+	/**
+	 * Gets Region for line item.
+	 * @return String, Region surveyed
+	 */
 	public String getRegion() {
 		return region;
 	}
 	
+	/** 
+	 * Gets Region or State for line item.
+	 * @return String, Region or State surveyed
+	 */
 	public String getRegionOrState() {
 		return regionOrState;
 	}
 	
+	/** 
+	 * Gets Year for line item.
+	 * @return String, survey year
+	 */
 	public String getYear() {
 		return year;
 	}
 	
+	/**
+	 * Gets Total Land for line item.
+	 * @return int, Acres of Total Land
+	 */
 	public int getTotalLand() {
 		return totalLand;
 	}
 	
+	/** 
+	 * Gets Total Cropland for line item.
+	 * @return int, Acres of Total Cropland
+	 */
 	public int getTotalCropland() {
 		return totalCropland;
 	}
 	
+	/** 
+	 * Gets Cropland Used for Crops for line item.
+	 * @return int, Acres of Cropland Used for Crops
+	 */
 	public int getCroplandUsedForCrops() {
 		return croplandUsedForCrops;
 	}
 	
+	/**
+	 * Gets Cropland Use for Pasture for line item.
+	 * @return int, Acres of Cropland Used for Pasture
+	 */
 	public int getCroplandUsedForPasture() {
 		return croplandUsedForPasture;
 	}
 	
+	/** 
+	 * Gets Cropland Idled for line item.
+	 * @return int, Acres of Cropland Idled
+	 */
 	public int getCroplandIdled() {
 		return croplandIdled;
 	}
 	
+	/** 
+	 * Gets Grassland Pasture and Range for line item.
+	 * @return int, Acres of Grassland Pasture and Range
+	 */
 	public int getGrasslandPastureAndRange() {
 		return grasslandPastureAndRange;
 	}
 	
+	/** 
+	 * Gets Forest Use Land for line item.
+	 * @return int, Acres of Forest Use Land
+	 */
 	public int getForestUseLand() {
 		return forestUseLand;
 	}
 	
+	/** 
+	 * Gets Forest Use Land Grazed for line item.
+	 * @return int, Acres of Forest Use Land Grazed 
+	 */
 	public int getForestUseLandGrazed() {
 		return forestUseLandGrazed;
 	}
 	
+	/** 
+	 * Gets Forest Use Land Not Grazed for line item.
+	 * @return int, Acres of Forest Use Land Not Grazed.
+	 */
 	public int getForestUseLandNotGrazed() {
 		return forestUseLandNotGrazed;
 	}
 	
+	/** 
+	 * Gets All Special Uses of Land for line item.
+	 * @return int, Acres of Special Uses of Land
+	 */
 	public int getAllSpecialUsesOfLand() {
 		return allSpecialUsesOfLand;
 	}
 	
+	/** 
+	 * Gets Land in Rural Transportation Facilities for line item.
+	 * @return int, Acres of Rural Transportation Facilities
+	 */
 	public int getLandInRuralTransportationFacilities() {
 		return landInRuralTransportationFacilities;
 	}
 	
+	/** 
+	 * Gets Land in Rural Parks and Wildlife Areas for line item.
+	 * @return int, Acres of Land in Rural Parks and Wildlife Areas
+	 */
 	public int getLandInRuralParksAndWildlifeAreas() {
 		return landInRuralParksAndWildlifeAreas;
 	}
 	
+	/** 
+	 * Gets Land in Defence and Industrial Areas for line item.
+	 * @return int, Acres of Land in Defense and Industrial Areas
+	 */
 	public int getLandInDefenseAndIndustrialAreas() {
 		return landInDefenseAndIndustrialAreas;
 	}
 	
+	/** 
+	 * Gets Farmsteads Roads and Miscelleaneous Farmland for line item.
+	 * @return int, Acres of Farmsteads, Roads, Miscellaneous Farmland
+	 */
 	public int getFarmsteadsRoadsAndMiscellaneousFarmland() {
 		return farmsteadsRoadsAndMiscellaneousFarmland;
 	}
 	
+	/** 
+	 * Gets Land In Urban Areas for line item.
+	 * @return int, Acres of Land in Urband Areas
+	 */
 	public int getLandInUrbanAreas() {
 		return landInUrbanAreas;
 	}
 	
+	/** 
+	 * Gets Other Land for line item.
+	 * @return int, Acres of Other Land
+	 */
 	public int getOtherLand() {
 		return otherLand;
 	}
