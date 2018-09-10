@@ -299,5 +299,50 @@ public class LandUseDataLineItem {
 		return otherLand;
 	}
 	
+	/**
+	 * Formats and prints content of LandUseDataLineItem instance.
+	 * Overrides toString() method.
+	 * 
+	 * Instructions from:
+	 * https://www.geeksforgeeks.org/overriding-tostring-method-in-java/
+	 * 
+	 */
+	@Override
+	public String toString() { 
+		String landUseOutput = String.format(
+											"Sort Order: %d \n" +
+											"Region: %s \n" +
+											"Region or State: %s \n" +
+											"Year: %s \n" +
+											"Total Land: %d \n" +
+											"Total Cropland: %d \n" +
+											"Cropland Used for Crops: %d \n" +
+											"Cropland Used for Pasture: %d \n" +
+											"Cropland Idled: %d \n" +
+											"Grassland Pasture and Range: %d \n" +
+											"Forest Use Land: %d \n" +
+											"Forest Use Land Grazed: %d \n" +
+											"Forest Use Land Not Grazed: %d \n" +
+											"All Special Uses of Land: %d \n" +
+											"Land in Rural Transportation Facilities: %d \n" +
+											"Land in Rural Park and Wildlife Areas: %d \n" +
+											"Land in Defense and Industrial Areas: %d \n" +
+											"Farmsteads, Roads, and Miscellaneous Farmland: %d \n" +
+											"Land in Urban Areas: %d \n" +
+											"Otherland: %d \n",
+											this.getSortOrder(), this.getRegion(), this.getRegionOrState(), this.getYear(),
+											this.getTotalLand(), this.getTotalCropland(), this.getCroplandUsedForCrops(),
+											this.getCroplandUsedForPasture(), this.getCroplandIdled(), 
+											this.getGrasslandPastureAndRange(), this.getForestUseLand(), 
+											this.getForestUseLandGrazed(), this.getForestUseLandNotGrazed(),
+											this.getAllSpecialUsesOfLand(), this.getLandInRuralTransportationFacilities(),
+											this.getLandInRuralParksAndWildlifeAreas(), this.getLandInDefenseAndIndustrialAreas(),
+											this.getFarmsteadsRoadsAndMiscellaneousFarmland(), this.getLandInUrbanAreas(),
+											this.getOtherLand()
+											);		
+	
+		return landUseOutput;
+	}
+	
 }
 
