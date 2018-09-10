@@ -54,6 +54,9 @@ public class LandUseDataProcessing {
 			
 			landUseData = initialDataStream
 							
+							// Skips the first row/header row of csv file.
+							.skip(1)
+							
 							// Filter out lines that contain "AK and HI", "48 States"
 							// and "U.S. Total" and "District of Columbia". This filter
 							// should catch these specific strings in the Region and States
@@ -61,9 +64,9 @@ public class LandUseDataProcessing {
 							// though I'm not specifically looking at the Region or 
 							// State data fields.
 							.filter(line -> !line.contains("AK and HI") 
-									|| !line.contains("48 States")
-									|| !line.contains("U.S. Total")
-									|| !line.contains("District of Columbia"))
+									&& !line.contains("48 States")
+									&& !line.contains("U.S. Total")
+									&& !line.contains("District of Columbia"))
 							
 							// Use map to split each line at commas, save 
 							// resulting elements to array of Strings.
@@ -81,7 +84,7 @@ public class LandUseDataProcessing {
 								return landUseInstance;
 							})
 							
-							// Filter the stream again to remove any state that contains the letter y.
+							// Filter the stream again to remove any state that contains the letter y/Y.
 							// I'm filtering separately so that I can restrict the filter to only the
 							// "Region or State" field and not to the entire line from the csv file (as
 							// is the case in the above filters).
@@ -89,7 +92,8 @@ public class LandUseDataProcessing {
 							// we should only check for y's in states, not regions. However, I manually
 							// reviewed the data and none of the region's present contain the letter y.
 							// So, by default, we are only filtering out states that contain y.
-							.filter(instance -> !instance.getRegionOrState().contains("y"))
+							.filter(instance -> !instance.getRegionOrState().contains("Y")
+									&& !instance.getRegionOrState().contains("y"))
 							
 							// Collect the filtered LandUseDataLineItem instances to the list.
 							.collect(Collectors.toList());
@@ -105,6 +109,10 @@ public class LandUseDataProcessing {
 	
 	// Call processData method on csv file.
 	public static void main(String[] args) {
-		processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+		List<LandUseDataLineItem> processedData = processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+		for (int i = 100; i <=125; i++) {
+			System.out.println(processedData.get(i));
+		}
 	}
+	
 }
