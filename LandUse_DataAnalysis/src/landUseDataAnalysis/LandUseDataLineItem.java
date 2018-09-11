@@ -45,26 +45,26 @@ public class LandUseDataLineItem {
 	// Please note: All fields designated as ints below will be
 	// converted from Strings using a helper method in the 
 	// constructor.
-	private int sortOrder;
+	private Integer sortOrder;
 	private String region;
 	private String regionOrState;
 	private String year;
-	private int totalLand;
-	private int totalCropland;
-	private int croplandUsedForCrops;
-	private int croplandUsedForPasture;
-	private int croplandIdled;
-	private int grasslandPastureAndRange;
-	private int forestUseLand;
-	private int forestUseLandGrazed;
-	private int forestUseLandNotGrazed;
-	private int allSpecialUsesOfLand;
-	private int landInRuralTransportationFacilities;
-	private int landInRuralParksAndWildlifeAreas;
-	private int landInDefenseAndIndustrialAreas;
-	private int farmsteadsRoadsAndMiscellaneousFarmland;
-	private int landInUrbanAreas;
-	private int otherLand;
+	private Integer totalLand;
+	private Integer totalCropland;
+	private Integer croplandUsedForCrops;
+	private Integer croplandUsedForPasture;
+	private Integer croplandIdled;
+	private Integer grasslandPastureAndRange;
+	private Integer forestUseLand;
+	private Integer forestUseLandGrazed;
+	private Integer forestUseLandNotGrazed;
+	private Integer allSpecialUsesOfLand;
+	private Integer landInRuralTransportationFacilities;
+	private Integer landInRuralParksAndWildlifeAreas;
+	private Integer landInDefenseAndIndustrialAreas;
+	private Integer farmsteadsRoadsAndMiscellaneousFarmland;
+	private Integer landInUrbanAreas;
+	private Integer otherLand;
 	
 	// Constructor assigns values to fields.
 	// Number Strings will be converted to ints here. I'm not 
@@ -105,28 +105,28 @@ public class LandUseDataLineItem {
 	}
 	
 	/** 
-	 * Converts String numbers to ints. Helper method.
+	 * Converts String numbers to Integers. Helper method.
 	 * 
-	 * It is necessary to convert these strings to ints
+	 * It is necessary to convert these strings to Integer
 	 * for future calculations in LandUseDataAnalysis class.
 	 * 
 	 * Using try/catch block as some String entries are "N.A."
 	 * These entries will trigger NumberFormatExceptions when 
 	 * attempting to ParseInt() on the String. The exception  
-	 * will be handled by returning int 0 in place of "N.A."
+	 * will be handled by returning Integer 0 in place of "N.A."
 	 * It is assumed that, for data analysis purposes, "N.A." 
 	 * will be equivalent to 0. THIS MAY BE AN INCORRECT 
 	 * ASSUMPTION. 
 	 * 
 	 * @param stringNumber, number of type String
-	 * @return int, String number converted to int
+	 * @return Integer, String number converted to Integer
 	 */
-	public int convertStringToInt(String stringNumber) {
+	public static int convertStringToInt(String stringNumber) {
 		
-		// Try to convert String number to int.
-		// If successful, return int.
+		// Try to convert String number to Integer.
+		// If successful, return Integer.
 		try {
-			int convertedInt = Integer.parseInt(stringNumber);
+			Integer convertedInt = Integer.valueOf(stringNumber);
 			return convertedInt;
 		
 		// Catch NumberFormatException errors that will occur
@@ -135,15 +135,16 @@ public class LandUseDataLineItem {
 		// and will allow for calculation/data analysis where 
 		// "N.A." will not.
 		} catch (NumberFormatException nfe) {
-			return 0; 
+			Integer zero = 0;
+		    return zero; 
 		}
 	}
 	
 	/**
 	 * Gets Sort Order for line item.
-	 * @return int, Sort Order
+	 * @return Integer, Sort Order
 	 */
-	public int getSortOrder() {
+	public Integer getSortOrder() {
 		return sortOrder;
 	}
 	
@@ -173,129 +174,129 @@ public class LandUseDataLineItem {
 	
 	/**
 	 * Gets Total Land for line item.
-	 * @return int, Acres of Total Land
+	 * @return Integer, Acres of Total Land
 	 */
-	public int getTotalLand() {
+	public Integer getTotalLand() {
 		return totalLand;
 	}
 	
 	/** 
 	 * Gets Total Cropland for line item.
-	 * @return int, Acres of Total Cropland
+	 * @return Integer, Acres of Total Cropland
 	 */
-	public int getTotalCropland() {
+	public Integer getTotalCropland() {
 		return totalCropland;
 	}
 	
 	/** 
 	 * Gets Cropland Used for Crops for line item.
-	 * @return int, Acres of Cropland Used for Crops
+	 * @return Integer, Acres of Cropland Used for Crops
 	 */
-	public int getCroplandUsedForCrops() {
+	public Integer getCroplandUsedForCrops() {
 		return croplandUsedForCrops;
 	}
 	
 	/**
 	 * Gets Cropland Use for Pasture for line item.
-	 * @return int, Acres of Cropland Used for Pasture
+	 * @return Integer, Acres of Cropland Used for Pasture
 	 */
-	public int getCroplandUsedForPasture() {
+	public Integer getCroplandUsedForPasture() {
 		return croplandUsedForPasture;
 	}
 	
 	/** 
 	 * Gets Cropland Idled for line item.
-	 * @return int, Acres of Cropland Idled
+	 * @return Integer, Acres of Cropland Idled
 	 */
-	public int getCroplandIdled() {
+	public Integer getCroplandIdled() {
 		return croplandIdled;
 	}
 	
 	/** 
 	 * Gets Grassland Pasture and Range for line item.
-	 * @return int, Acres of Grassland Pasture and Range
+	 * @return Integer, Acres of Grassland Pasture and Range
 	 */
-	public int getGrasslandPastureAndRange() {
+	public Integer getGrasslandPastureAndRange() {
 		return grasslandPastureAndRange;
 	}
 	
 	/** 
 	 * Gets Forest Use Land for line item.
-	 * @return int, Acres of Forest Use Land
+	 * @return Integer, Acres of Forest Use Land
 	 */
-	public int getForestUseLand() {
+	public Integer getForestUseLand() {
 		return forestUseLand;
 	}
 	
 	/** 
 	 * Gets Forest Use Land Grazed for line item.
-	 * @return int, Acres of Forest Use Land Grazed 
+	 * @return Integer, Acres of Forest Use Land Grazed 
 	 */
-	public int getForestUseLandGrazed() {
+	public Integer getForestUseLandGrazed() {
 		return forestUseLandGrazed;
 	}
 	
 	/** 
 	 * Gets Forest Use Land Not Grazed for line item.
-	 * @return int, Acres of Forest Use Land Not Grazed.
+	 * @return Integer, Acres of Forest Use Land Not Grazed.
 	 */
-	public int getForestUseLandNotGrazed() {
+	public Integer getForestUseLandNotGrazed() {
 		return forestUseLandNotGrazed;
 	}
 	
 	/** 
 	 * Gets All Special Uses of Land for line item.
-	 * @return int, Acres of Special Uses of Land
+	 * @return Integer, Acres of Special Uses of Land
 	 */
-	public int getAllSpecialUsesOfLand() {
+	public Integer getAllSpecialUsesOfLand() {
 		return allSpecialUsesOfLand;
 	}
 	
 	/** 
 	 * Gets Land in Rural Transportation Facilities for line item.
-	 * @return int, Acres of Rural Transportation Facilities
+	 * @return Integer, Acres of Rural Transportation Facilities
 	 */
-	public int getLandInRuralTransportationFacilities() {
+	public Integer getLandInRuralTransportationFacilities() {
 		return landInRuralTransportationFacilities;
 	}
 	
 	/** 
 	 * Gets Land in Rural Parks and Wildlife Areas for line item.
-	 * @return int, Acres of Land in Rural Parks and Wildlife Areas
+	 * @return Integer, Acres of Land in Rural Parks and Wildlife Areas
 	 */
-	public int getLandInRuralParksAndWildlifeAreas() {
+	public Integer getLandInRuralParksAndWildlifeAreas() {
 		return landInRuralParksAndWildlifeAreas;
 	}
 	
 	/** 
 	 * Gets Land in Defence and Industrial Areas for line item.
-	 * @return int, Acres of Land in Defense and Industrial Areas
+	 * @return Integer, Acres of Land in Defense and Industrial Areas
 	 */
-	public int getLandInDefenseAndIndustrialAreas() {
+	public Integer getLandInDefenseAndIndustrialAreas() {
 		return landInDefenseAndIndustrialAreas;
 	}
 	
 	/** 
 	 * Gets Farmsteads Roads and Miscelleaneous Farmland for line item.
-	 * @return int, Acres of Farmsteads, Roads, Miscellaneous Farmland
+	 * @return Integer, Acres of Farmsteads, Roads, Miscellaneous Farmland
 	 */
-	public int getFarmsteadsRoadsAndMiscellaneousFarmland() {
+	public Integer getFarmsteadsRoadsAndMiscellaneousFarmland() {
 		return farmsteadsRoadsAndMiscellaneousFarmland;
 	}
 	
 	/** 
 	 * Gets Land In Urban Areas for line item.
-	 * @return int, Acres of Land in Urband Areas
+	 * @return Integer, Acres of Land in Urband Areas
 	 */
-	public int getLandInUrbanAreas() {
+	public Integer getLandInUrbanAreas() {
 		return landInUrbanAreas;
 	}
 	
 	/** 
 	 * Gets Other Land for line item.
-	 * @return int, Acres of Other Land
+	 * @return Integer, Acres of Other Land
 	 */
-	public int getOtherLand() {
+	public Integer getOtherLand() {
 		return otherLand;
 	}
 	
