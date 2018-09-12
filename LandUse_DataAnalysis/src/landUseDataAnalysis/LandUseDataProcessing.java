@@ -59,14 +59,14 @@ public class LandUseDataProcessing {
 							.skip(1)
 							
 							// Filter out lines that contain "AK and HI", "48 States"
-							// and "U.S. Total" and "District of Columbia". This filter
+							// and "U.S. total" and "District of Columbia". This filter
 							// should catch these specific strings in the Region and States
 							// columns of the csv file. Meaning, it should work even
 							// though I'm not specifically looking at the Region or 
 							// State data fields.
 							.filter(line -> !line.contains("AK and HI") 
 									&& !line.contains("48 States")
-									&& !line.contains("U.S. Total")
+									&& !line.contains("U.S. total")
 									&& !line.contains("District of Columbia"))
 							
 							// Use map to split each line at commas, save 
