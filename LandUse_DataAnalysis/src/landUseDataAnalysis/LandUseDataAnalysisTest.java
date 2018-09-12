@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Tests for LandUseDataLineItem.java, LandUseDataProcessing.java, and
@@ -88,9 +86,9 @@ public class LandUseDataAnalysisTest {
      */
     @Test
     public void LandUseDataLineItemStringConversionTest() {
-        LandUseDataLineItem testConversion = new LandUseDataLineItem("17", "Northeast", "Maine", "1949", "19866",
-                "1407", "1186", "221", "N.A.", "273", "16685", "783", "15902", "482", "169", "209", "13", "91", "104",
-                "915");
+        LandUseDataLineItem testConversion = new LandUseDataLineItem("17", "Northeast", 
+                "Maine", "1949", "19866", "1407", "1186", "221", "N.A.", "273", "16685", 
+                "783", "15902", "482", "169", "209", "13", "91", "104", "915");
         assertEquals(Integer.class, testConversion.getSortOrder().getClass());
         assertEquals(Integer.class, testConversion.getTotalLand().getClass());
         assertEquals(Integer.class, testConversion.getTotalCropland().getClass());
@@ -124,12 +122,14 @@ public class LandUseDataAnalysisTest {
         
         // Incorrect file path
         assertThrows(IOException.class, () -> {
-            LandUseDataProcessing.processData("/Users/phrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+            LandUseDataProcessing.processData(
+                    "/Users/phrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
         });
         
         // Incorrect file name
         assertThrows(IOException.class, () -> {
-            LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_195-2012.sv");
+            LandUseDataProcessing.processData(
+                    "/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_195-2012.sv");
         });
     }
     
@@ -147,7 +147,8 @@ public class LandUseDataAnalysisTest {
     public void LandUseDataProcessingSkipHeaderRowTest() throws IOException {
         
         // Call processData and save resulting list to processedData variable.
-        List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+        List<LandUseDataLineItem> processedData = 
+                LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
 
         // The first object instance should contain data, not column headers from the csv.
         // Sort Order should be 1.
@@ -169,12 +170,20 @@ public class LandUseDataAnalysisTest {
     
     /** 
      * Test LandUseDataProcessing.java to ensure no Region fields contain 
-     * "AK and HI", "48 States", "U.S. Total", no Region or State field
+     * "AK and HI", "48 States", "U.S. total", no Region or State field
      * contains "District of Columbia" and no state name contains
      * the letter y.
      * 
      * I'm testing each set of filters separately because I think it will 
      * provide more clarity to the test and results.
+     * 
+     * I also want to check to ensure that object instances which were NOT 
+     * supposed to be created have, in fact, NOT been created. I am checking 
+     * Sort Order 938, a "U.S. total", and SortOrder 491, a state (Kentucky) 
+     * that contains the letter y, Sort Order 924, a "AK and HI", Sort Order 
+     * 888, a "48 States", and Sort Order 185, a "District of Columbia". 
+     * None of these SortOrders should be found
+     * in the LandUseDataLineItem instances List.
      * 
      * Uses Java Streams to filter data. 
      * Attribution: https://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html
@@ -184,7 +193,8 @@ public class LandUseDataAnalysisTest {
     public void LandUseDataProcessingRegionStateFiltersTest() throws IOException {
         
         // Call processData and get list of Objects
-        List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+        List<LandUseDataLineItem> processedData = 
+                LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
 
         // Create empty array to check against in tests below.
         List<String> emptyArray = new ArrayList<>();
@@ -200,8 +210,8 @@ public class LandUseDataAnalysisTest {
         List<String> regions = 
                 processedData.stream()
                             .filter(dataInstance -> dataInstance.getRegion().equals("AK and HI")
-                                    && dataInstance.getRegion().equals("48 States")
-                                    && dataInstance.getRegion().equals("U.S.Total"))
+                                    || dataInstance.getRegion().equals("48 States")
+                                    || dataInstance.getRegion().equals("U.S.total"))
                             .map(dataInstance -> dataInstance.getRegion())
                             .collect(Collectors.toList());
         
@@ -238,18 +248,34 @@ public class LandUseDataAnalysisTest {
         List<String> states = 
                 processedData.stream()
                             .filter(dataInstance -> dataInstance.getRegionOrState().contains("y")
-                                    && dataInstance.getRegionOrState().contains("Y"))
+                                    || dataInstance.getRegionOrState().contains("Y"))
                             .map(dataInstance -> dataInstance.getRegionOrState())
                             .collect(Collectors.toList());
         
         // Assert that the states List is empty by comparing it to the previously
         // created emptyArray List.
         assertEquals(emptyArray, states);
+        
+        List<Integer> noInstances = 
+                processedData.stream()
+                            .filter(dataInstance -> dataInstance.getSortOrder().equals(938)
+                                    || dataInstance.getSortOrder().equals(491)
+                                    || dataInstance.getSortOrder().equals(924)
+                                    || dataInstance.getSortOrder().equals(888)
+                                    || dataInstance.getSortOrder().equals(185))
+                            .map(dataInstance -> dataInstance.getSortOrder())
+                            .collect(Collectors.toList());
+        
+        assertEquals(emptyArray, noInstances);
+        
     }
     
     /** 
      * Test LandUseDataProcessing.java to ensure that LandUseDataLineItem
      * object instances are created and stored correctly in the landUseInstances List.
+     * 
+     * I am specifically checking three instances the first (Sort Order 1), a middle 
+     * instance (Sort Order 448) and the last (Sort Order 885).
      * @throws IOException 
      * 
      * 
@@ -260,15 +286,93 @@ public class LandUseDataAnalysisTest {
         // Call processData method and get List of LandUseDataLineItem objects.
         List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
 
-        // Using, Stream, get and print three object instances (SortOrder: 1 (first), 448 (middle-ish), 
+        // Create List of Strings to compare object instances to. Each String will 
+        // contain what the toString() method of LandUseDataLineItem instances should
+        // produce.
+        List<String> correctObjects = new ArrayList<>();
+        String sortOrder1 = "Sort Order: 1 \n" +
+                            "Region: Northeast total \n" +
+                            "Region or State: Northeast \n" +
+                            "Year: 1945 \n" +
+                            "Total Land: 112402 \n" +
+                            "Total Cropland: 25027 \n" +
+                            "Cropland Used for Crops: 20904 \n" +
+                            "Cropland Used for Pasture: 2280 \n" +
+                            "Cropland Idled: 1842 \n" +
+                            "Grassland Pasture and Range: 10126 \n" +
+                            "Forest Use Land: 61788 \n" +
+                            "Forest Use Land Grazed: 9001 \n" +
+                            "Forest Use Land Not Grazed: 52787 \n" +
+                            "All Special Uses of Land: 6374 \n" +
+                            "Land in Rural Transportation Facilities: 1910 \n" +
+                            "Land in Rural Park and Wildlife Areas: 2818 \n" +
+                            "Land in Defense and Industrial Areas: 529 \n" +
+                            "Farmsteads, Roads, and Miscellaneous Farmland: 1118 \n" +
+                            "Land in Urban Areas: 3975 \n" +
+                            "Otherland: 5112 \n";
+        
+        String sortOrder448 = "Sort Order: 448 \n" +
+                            "Region: Appalachian \n" +
+                            "Region or State: Virginia \n" +
+                            "Year: 2002 \n" +
+                            "Total Land: 25340 \n" +
+                            "Total Cropland: 4168 \n" +
+                            "Cropland Used for Crops: 2712 \n" +
+                            "Cropland Used for Pasture: 1267 \n" +
+                            "Cropland Idled: 189 \n" +
+                            "Grassland Pasture and Range: 1373 \n" +
+                            "Forest Use Land: 15372 \n" +
+                            "Forest Use Land Grazed: 902 \n" +
+                            "Forest Use Land Not Grazed: 14470 \n" +
+                            "All Special Uses of Land: 1590 \n" +
+                            "Land in Rural Transportation Facilities: 330 \n" +
+                            "Land in Rural Park and Wildlife Areas: 797 \n" +
+                            "Land in Defense and Industrial Areas: 274 \n" +
+                            "Farmsteads, Roads, and Miscellaneous Farmland: 189 \n" +
+                            "Land in Urban Areas: 1526 \n" +
+                            "Otherland: 1312 \n";
+        
+        String sortOrder885 = "Sort Order: 885 \n" +
+                            "Region: Pacific \n" +
+                            "Region or State: California \n" +
+                            "Year: 2012 \n" +
+                            "Total Land: 99699 \n" +
+                            "Total Cropland: 9577 \n" +
+                            "Cropland Used for Crops: 8316 \n" +
+                            "Cropland Used for Pasture: 481 \n" +
+                            "Cropland Idled: 780 \n" +
+                            "Grassland Pasture and Range: 26667 \n" +
+                            "Forest Use Land: 16991 \n" +
+                            "Forest Use Land Grazed: 13409 \n" +
+                            "Forest Use Land Not Grazed: 3582 \n" +
+                            "All Special Uses of Land: 24896 \n" +
+                            "Land in Rural Transportation Facilities: 1062 \n" +
+                            "Land in Rural Park and Wildlife Areas: 19623 \n" +
+                            "Land in Defense and Industrial Areas: 3935 \n" +
+                            "Farmsteads, Roads, and Miscellaneous Farmland: 275 \n" +
+                            "Land in Urban Areas: 5299 \n" +
+                            "Otherland: 16269 \n";
+        
+        // Add above strings to correctObjects List.
+        correctObjects.add(sortOrder1);
+        correctObjects.add(sortOrder448);
+        correctObjects.add(sortOrder885);
+        
+        // Using Stream, get and print three object instances (SortOrder: 1 (first), 448 (middle-ish), 
         // and 885 (last) and ensure they match data from csv file.
+        // Will call toString() on the three instances and then collect to List as per
+        // Oracle docs example: https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collectors.html
+        List<String> threeInstances = 
+                processedData.stream()
+                            .filter(dataInstance -> dataInstance.getSortOrder().equals(1)
+                                    || dataInstance.getSortOrder().equals(448)
+                                    || dataInstance.getSortOrder().equals(885))
+                            .map(dataInstance -> dataInstance.toString())
+                            .collect(Collectors.toList());
         
+        // Assert that the above List of Strings matches the List of Strings collected
+        // from the processed data. 
+        assertEquals(correctObjects, threeInstances);
         
-        // Double check that several object instances that should have been filtered
-        // out were in fact filtered out. SortOrder 938 is a "U.S. Total" and should 
-        // not appear. SortOrder 491 is a state (Kentucky) that contains the letter y.
     }
-    
-    
-
 }
