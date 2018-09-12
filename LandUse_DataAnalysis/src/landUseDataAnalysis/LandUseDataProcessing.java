@@ -42,8 +42,9 @@ public class LandUseDataProcessing {
 	 * https://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html
 	 * https://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html
 	 * https://stackoverflow.com/questions/15730134/java-opposite-of-contains-does-not-contain
+	 * @throws IOException 
 	 */
-	public static List<LandUseDataLineItem> processData(String filePath) {
+	public static List<LandUseDataLineItem> processData(String filePath) throws IOException {
 		
 		// Create list to hold landUseDataLineItem objects.
 		List<LandUseDataLineItem> landUseData = new ArrayList<LandUseDataLineItem>();
@@ -98,9 +99,11 @@ public class LandUseDataProcessing {
 							// Collect the filtered LandUseDataLineItem instances to the list.
 							.collect(Collectors.toList());
 		
-		// Catch any IO Exceptions and print the stack traces.
+		// Catch any IO Exceptions, print the stack trace, and rethrow the IOException
+		// for testing purposes.
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		    ioe.printStackTrace();
+		    throw new IOException(ioe);
 		}
  
 		// Return the list of filtered LandUseDataLineItem instances.
@@ -108,11 +111,11 @@ public class LandUseDataProcessing {
 	}
 	
 	// Call processData method on csv file.
-	public static void main(String[] args) {
-		List<LandUseDataLineItem> processedData = processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
-		for (int i = 100; i <=125; i++) {
-			System.out.println(processedData.get(i));
-		}
-	}
+//	public static void main(String[] args) throws IOException {
+//		List<LandUseDataLineItem> processedData = processData("/Users/pchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+//		for (int i = 100; i <=125; i++) {
+//			System.out.println(processedData.get(i));
+//		}
+//	}
 	
 }
