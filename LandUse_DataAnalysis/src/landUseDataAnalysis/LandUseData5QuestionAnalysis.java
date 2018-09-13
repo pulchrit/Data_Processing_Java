@@ -3,6 +3,8 @@ package landUseDataAnalysis;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Analyzes LandUseData from csv file after that data has been processed
@@ -34,7 +36,7 @@ public class LandUseData5QuestionAnalysis {
         
     /** 
      * Answer question 1.
-     * Which region had the most Grassland pasture and range in 1974?
+     * Which region had the most "Grassland pasture and range" in 1974?
      * 
      * @param List, processed LandUseDataLineItem objects. 
      * @return String, region with most Grassland pasture and range in 1974. 
@@ -65,6 +67,39 @@ public class LandUseData5QuestionAnalysis {
                     
     }
     
+    /** 
+     * Answer question 2. 
+     * How many states had at least 2,000 in the “Land in Urban areas” column for 
+     * any year prior to 1987?
+     * 
+     * @param args
+     * @throws IOException
+     */
+    public static int findRegionsUrbanLand2000Prior1987(List<LandUseDataLineItem> processedData) {
+        
+        /* Make a stream of processed data.
+         * Filter for LandUseDataLineItems that have greater than or equal to 
+         * 2000 acres in Land in Urban Areas, and do not contain the word "total"
+         * in the Region field (this will remove regional totals leaving us with only
+         * state totals which is what we want), and where the year is less than (i.e.,
+         * prior to) 1987.
+         * Then use map to get the state names from the Region or State field.
+         * And collect these to a set which will remove duplicates. 
+         * Get and return the size of this set which will be equal to the number 
+         * of states that had at least 2000 in "Land in Urban Areas" for any year
+         * prior to 1987.
+         */
+        Set<String> regionsUrbanLand2000Prior1987 = 
+                processedData.stream()
+                .filter(dataInstance -> dataInstance.getLandInUrbanAreas() >= 2000
+                        && !dataInstance.getRegion().contains("total") 
+                        && Integer.parseInt(dataInstance.getYear()) < 1987)
+                .map(dataInstance -> dataInstance.getRegionOrState())
+                .collect(Collectors.toSet());
+        System.out.println(regionsUrbanLand2000Prior1987);
+        return regionsUrbanLand2000Prior1987.size();
+    }
+    
     public static void main(String[] args) throws IOException {
         
         // Get processed data from csv file. 
@@ -74,8 +109,13 @@ public class LandUseData5QuestionAnalysis {
         // from the LandUseDataProcessing here instead.
         List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
         
-        // Call 
+        // Call findRegionMaxGrasslandPasture1974() to answer question 1.
+        // Output the result to the console.
         System.out.println(findRegionMaxGrasslandPasture1974(processedData));
+        
+        // Call findRegionsUrbanLand2000Prior1987() to answer question 2.
+        // Output the result to the console.
+        System.out.println(findRegionsUrbanLand2000Prior1987(processedData));
     }
 
 }
