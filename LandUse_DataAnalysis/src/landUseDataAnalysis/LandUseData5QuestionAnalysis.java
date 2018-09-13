@@ -72,8 +72,10 @@ public class LandUseData5QuestionAnalysis {
      * How many states had at least 2,000 in the “Land in Urban areas” column for 
      * any year prior to 1987?
      * 
-     * @param args
-     * @throws IOException
+     * @param  List, processed LandUseDataLineItem objects.
+     * @return int, number of states with more than 2000 in Land in Urban areas
+     * prior to 1987.
+     * 
      */
     public static int findRegionsUrbanLand2000Prior1987(List<LandUseDataLineItem> processedData) {
         
@@ -96,10 +98,46 @@ public class LandUseData5QuestionAnalysis {
                         && Integer.parseInt(dataInstance.getYear()) < 1987)
                 .map(dataInstance -> dataInstance.getRegionOrState())
                 .collect(Collectors.toSet());
-        System.out.println(regionsUrbanLand2000Prior1987);
+
         return regionsUrbanLand2000Prior1987.size();
     }
     
+    /**
+     * Answer question 3. 
+     * What is the average value of the “Cropland used for pasture” column 
+     * among all states within the Pacific and Mountain regions for 1964?
+     * 
+     * @param  List, processed LandUseDataLineItem objects.
+     * @return int, average acres of Cropland used for pasture in the 
+     * Pacific and Mountain regions in 1964.
+     */
+    public static double findAverageCroplandForPasturePacificMountain1964(List<LandUseDataLineItem> processedData) {
+        
+        /* Make a stream of processed data.
+         * Filter for LandUseDataLineItem instances where the year is 1964, 
+         * and the region is "Pacific" or "Mountain".
+         * Use special collector averagingInt to find the average Cropland
+         * Used for Pasture of these filtered LandUseDataLineItem instances.
+         * Attribution: https://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html 
+         * Return that average.
+         */
+        double averageCroplandPasturePacificMountina1964 =
+                processedData.stream()
+                .filter(dataInstance -> dataInstance.getYear().equals("1964")
+                        && dataInstance.getRegion().equals("Pacific")
+                        && dataInstance.getRegion().equals("Mountain"))
+                .collect(Collectors.averagingInt(dataInstance -> dataInstance.getCroplandUsedForPasture()));
+        
+        return averageCroplandPasturePacificMountina1964;
+    }
+    
+    /**
+     * Main method that is called to answer all five questions and output 
+     * answers to console. 
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         
         // Get processed data from csv file. 
@@ -111,11 +149,11 @@ public class LandUseData5QuestionAnalysis {
         
         // Call findRegionMaxGrasslandPasture1974() to answer question 1.
         // Output the result to the console.
-        System.out.println(findRegionMaxGrasslandPasture1974(processedData));
+        System.out.println("Question 1: " + findRegionMaxGrasslandPasture1974(processedData));
         
         // Call findRegionsUrbanLand2000Prior1987() to answer question 2.
         // Output the result to the console.
-        System.out.println(findRegionsUrbanLand2000Prior1987(processedData));
+        System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData));
     }
 
 }
