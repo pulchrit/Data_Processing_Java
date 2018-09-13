@@ -110,12 +110,4 @@ public class LandUseDataProcessing {
 		return landUseData;
 	}
 	
-	// Call processData method on csv file.
-//	public static void main(String[] args) throws IOException {
-//		List<LandUseDataLineItem> processedData = processData("/Users/pchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
-//		for (int i = 100; i <=125; i++) {
-//			System.out.println(processedData.get(i));
-//		}
-//	}
-	
 }
