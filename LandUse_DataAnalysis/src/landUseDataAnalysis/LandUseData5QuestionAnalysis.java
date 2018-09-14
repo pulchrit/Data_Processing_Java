@@ -121,13 +121,65 @@ public class LandUseData5QuestionAnalysis {
          * Attribution: https://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html 
          * Return that average.
          */
-        double averageCroplandPasturePacificMountina1964 =
+        double averageCroplandPasturePacificMountian1964 =
                 processedData.stream()
                 .filter(dataInstance -> dataInstance.getRegion().equals("Pacific")
                         || dataInstance.getRegion().equals("Mountain"))
                 .filter(dataInstance -> dataInstance.getYear().equals("1964"))
                 .collect(Collectors.averagingInt(dataInstance -> dataInstance.getCroplandUsedForPasture()));
-        return averageCroplandPasturePacificMountina1964;
+        return averageCroplandPasturePacificMountian1964;
+    }
+    
+    /**
+     * Answer question 4.
+     * Consider the original 13 colonies of England which became what is now the 
+     * United States. Of the states that have land within the territory of those 
+     * 13 colonies, which state made the largest contribution to its region's total 
+     * “Forest-use land” in 2012?
+     */
+    public static String findMaxForestUseland13Colonies2012(List<LandUseDataLineItem> processedData) {
+        
+        /* Make a stream of processed data.
+         * Filter for the year 2012.
+         * Filter for the original 13 colonies with the following caveats: 
+         *      - Modern day state equivalents are used in place of the 13 colonies.
+         *      Much of the western borders of those colonies were different than the
+         *      modern state equivalents, but I am using modern state equivalents here. 
+         *      - West Virginia is included as the colony of Virginia included 
+         *      all of modern-day West Virginia.
+         *      - States/colonies that contain the letter y and the District of 
+         *      Columbia are not included because they have already been 
+         *      removed from the processed data.
+         *      Attribution for 13 colony info: 
+         *      https://www.worldatlas.com/webimage/countrys/namerica/usstates/colonies.htm
+         * We are looking for the maximum Forest Use Land of the 13 
+         * colonies/modern-state-equivalents. By default, that colony/state will 
+         * have contributed the most to its region's total. We don't need to 
+         * group by region and then look at individual state totals. We can just
+         * look at state totals. The max Forest Use Land of these states will be 
+         * the state that contributes the most to its region's total Forest Use Land. 
+         * So, we find the max using the Comparator of ForestUseLand and save 
+         * the LandUseDatLineItem instance to the variable.
+         */
+        LandUseDataLineItem stateMaxForestUseLand13Colonies2012 = 
+                processedData.stream()
+                .filter(dataInstance -> dataInstance.getYear().equals("2012"))
+                .filter(dataInstance -> dataInstance.getRegionOrState().equals("Delaware")
+                        || dataInstance.getRegionOrState().equals("Georgia")
+                        || dataInstance.getRegionOrState().equals("Connecticut")
+                        || dataInstance.getRegionOrState().equals("Massachusetts")
+                        || dataInstance.getRegionOrState().equals("South Carolina")
+                        || dataInstance.getRegionOrState().equals("New Hampshire")
+                        || dataInstance.getRegionOrState().equals("Virginia")
+                        || dataInstance.getRegionOrState().equals("West Virginia")
+                        || dataInstance.getRegionOrState().equals("North Carolina")
+                        || dataInstance.getRegionOrState().equals("Rhode Island"))
+                .max(Comparator.comparing(dataInstance -> dataInstance.getForestUseLand()))
+                .get();
+        
+        // Get and return the state name of the LandUseDataLineItem.
+        return stateMaxForestUseLand13Colonies2012.getRegionOrState();
+                
     }
     
     /**
@@ -157,6 +209,10 @@ public class LandUseData5QuestionAnalysis {
         // Call findAverageCroplandForPasturePacificMountain1964() to answer question 3.
         // Output result to the console.
         System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData));
+   
+        // Call findMaxForestUseland13Colonies2012 to answer question 4. 
+        // Output result to console.
+        System.out.println("Question 4: " + findMaxForestUseland13Colonies2012(processedData));
     }
 
 }
