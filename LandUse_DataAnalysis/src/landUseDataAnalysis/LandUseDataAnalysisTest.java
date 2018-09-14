@@ -388,10 +388,12 @@ public class LandUseDataAnalysisTest {
     public void findRegionMaxGrasslandPasture1974Test() throws IOException {
         
         // Call processData method and get List of LandUseDataLineItem objects.
-        List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+        List<LandUseDataLineItem> processedData = LandUseDataProcessing
+                .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
         
         // Assert the findRegionMaxGrasslandPasture1974 method returns "Mountain total".
-        assertEquals("Mountain total", LandUseData5QuestionAnalysis.findRegionMaxGrasslandPasture1974(processedData));
+        assertEquals("Mountain total", LandUseData5QuestionAnalysis
+                .findRegionMaxGrasslandPasture1974(processedData));
     }
     
     /** 
@@ -405,9 +407,30 @@ public class LandUseDataAnalysisTest {
     public void findRegionsUrbanLand2000Prior1987Test() throws IOException {
         
         // Call processData method and get List of LandUseDataLineItem objects.
-        List<LandUseDataLineItem> processedData = LandUseDataProcessing.processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+        List<LandUseDataLineItem> processedData = LandUseDataProcessing
+                .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
         
         // Assert the findRegionsUrbanLand2000Prior1987 method returns 4.
-        assertEquals(4, LandUseData5QuestionAnalysis.findRegionsUrbanLand2000Prior1987(processedData));
+        assertEquals(4, LandUseData5QuestionAnalysis
+                .findRegionsUrbanLand2000Prior1987(processedData));
     }
+    
+    /**
+     * Test LandUseData5QuesionAnalysis.java's findAverageCroplandForPasturePacificMountain1964
+     * method.
+     * 
+     * Filtered and sorted csv file in excel to determine correct answer of 777.1.
+     * @throws IOException
+     */
+    @Test
+    public void findAverageCroplandForPasturePacificMountain1964Test() throws IOException {
+        // Call processData method and get List of LandUseDataLineItem objects.
+        List<LandUseDataLineItem> processedData = LandUseDataProcessing
+                .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+        
+        // Assert the findAverageCroplandForPasturePacificMountain1964 Method returns
+        // 777.1
+        assertEquals(777.1, LandUseData5QuestionAnalysis
+                .findAverageCroplandForPasturePacificMountain1964(processedData), .5);
+        }
 }
