@@ -123,11 +123,10 @@ public class LandUseData5QuestionAnalysis {
          */
         double averageCroplandPasturePacificMountina1964 =
                 processedData.stream()
-                .filter(dataInstance -> dataInstance.getYear().equals("1964")
-                        && dataInstance.getRegion().equals("Pacific")
-                        && dataInstance.getRegion().equals("Mountain"))
+                .filter(dataInstance -> dataInstance.getRegion().equals("Pacific")
+                        || dataInstance.getRegion().equals("Mountain"))
+                .filter(dataInstance -> dataInstance.getYear().equals("1964"))
                 .collect(Collectors.averagingInt(dataInstance -> dataInstance.getCroplandUsedForPasture()));
-        
         return averageCroplandPasturePacificMountina1964;
     }
     
@@ -154,6 +153,10 @@ public class LandUseData5QuestionAnalysis {
         // Call findRegionsUrbanLand2000Prior1987() to answer question 2.
         // Output the result to the console.
         System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData));
+    
+        // Call findAverageCroplandForPasturePacificMountain1964() to answer question 3.
+        // Output result to the console.
+        System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData));
     }
 
 }
