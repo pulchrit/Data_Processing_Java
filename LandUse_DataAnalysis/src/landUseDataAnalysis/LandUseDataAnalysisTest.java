@@ -424,13 +424,33 @@ public class LandUseDataAnalysisTest {
      */
     @Test
     public void findAverageCroplandForPasturePacificMountain1964Test() throws IOException {
+        
         // Call processData method and get List of LandUseDataLineItem objects.
         List<LandUseDataLineItem> processedData = LandUseDataProcessing
                 .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
         
-        // Assert the findAverageCroplandForPasturePacificMountain1964 Method returns
+        // Assert the findAverageCroplandForPasturePacificMountain1964 method returns
         // 777.1
         assertEquals(777.1, LandUseData5QuestionAnalysis
                 .findAverageCroplandForPasturePacificMountain1964(processedData), .5);
         }
+    
+    /**
+     * Test LandUseData5QuestionAnalysis.java's findMaxForestUseland13Colonies2012
+     * method.
+     * 
+     * Filtered and sorted csv file in excel to determine correct answer of Georgia.
+     * @throws IOException
+     */
+    @Test
+    public void findMaxForestUseland13Colonies2012Test() throws IOException {
+        
+        // Call processData method and get List of LandUseDataLineItem objects.
+        List<LandUseDataLineItem> processedData = LandUseDataProcessing
+                .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+    
+        // Assert the findMaxForestUseland13Colonies2012 method returns Georgia.
+        assertEquals("Georgia", LandUseData5QuestionAnalysis
+                .findMaxForestUseland13Colonies2012(processedData));
+    }
 }
