@@ -136,6 +136,10 @@ public class LandUseData5QuestionAnalysis {
      * United States. Of the states that have land within the territory of those 
      * 13 colonies, which state made the largest contribution to its region's total 
      * “Forest-use land” in 2012?
+     * 
+     * @param  List, processed LandUseDataLineItem objects.
+     * @return String, name of state in territory of original 13 colonies with most 
+     * Forest Use Land for its region.
      */
     public static String findMaxForestUseland13Colonies2012(List<LandUseDataLineItem> processedData) {
         
@@ -180,6 +184,20 @@ public class LandUseData5QuestionAnalysis {
         // Get and return the state name of the LandUseDataLineItem.
         return stateMaxForestUseLand13Colonies2012.getRegionOrState();
                 
+    }
+    
+    /**
+     * Answer question 5.
+     * Which region has had the largest shift in its land use between 1945 and 2012? 
+     * Please explain your reasoning, including the data that you used to reach 
+     * that conclusion.
+     * 
+     * @param  List, processed LandUseDataLineItem objects.
+     * @return String, name of region with largest shift in land use.
+     */
+    public static String findRegionMaxShiftLandUse1945To2012(List<LandUseDataLineItem> processedData) {
+        
+         
     }
     
     /**
