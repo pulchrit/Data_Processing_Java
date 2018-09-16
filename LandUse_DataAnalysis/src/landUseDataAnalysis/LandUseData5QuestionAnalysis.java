@@ -2,7 +2,10 @@ package landUseDataAnalysis;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -197,6 +200,134 @@ public class LandUseData5QuestionAnalysis {
      */
     public static String findRegionMaxShiftLandUse1945To2012(List<LandUseDataLineItem> processedData) {
         
+        Map<String, List<LandUseDataLineItem>> regionTotal19452012 = 
+                processedData.stream()
+                .filter(dataInstance -> dataInstance.getRegion().contains("total"))
+                .filter(dataInstance -> dataInstance.getYear().equals("1945")
+                        || dataInstance.getYear().equals("2012"))
+                .collect(Collectors.groupingBy(dataInstance -> dataInstance.getRegion()));
+        
+        // Creating a hashmap with an inner hashmap. Inner hashmap will hold the delta 
+        // between the 2012 and 1945 land values. External hashmap will link these values
+        // to their appropriate region. 
+        // Attribution: https://coderanch.com/t/570043/java/Populating-HashMaps-HashMap-Objects
+        HashMap<String, HashMap<String, Integer>> regionDeltas = new HashMap<String, HashMap<String, Integer>>();
+//        HashMap<String, Integer> landUseDeltas = new HashMap<String, Integer>();
+        
+        
+        // Iterate over each region of the hashmap.
+        regionTotal19452012.forEach((k, v) -> {
+           
+            HashMap<String, Integer> landUseDeltas = new HashMap<String, Integer>();
+                           
+            // Now, we want to find the delta between the 2012 and 1945 field values. 
+            // There are only two elements for each hashmap value (one for 1945 
+            // and one for 2012). So, I call each of these elements using their
+            // appropriate index (0 for 1945, 1 for 2012).
+            // I am subtracting 1945 values from 2012 values (i.e., 2012-1945) so that 
+            // a decrease is signed negative (-) and an increase is signed positive (+).
+            // Then, I am adding that delta to the inner hashmap with a key of the field
+            // name or type of land use. (i.e., "Cropland Used for Crops" : -150).
+            // I manually enter all land use types/field names below. 
+            // !!This is arduous and not re-usable code. I'm sure there is a cleaner
+            // way to manage it using Streams, but I was not finding the correct way to 
+            // write the Collector code!!
+            
+            Integer deltaCroplandForCrops = 
+                    v.get(1).getCroplandUsedForCrops() - v.get(0).getCroplandUsedForCrops();
+            landUseDeltas.put("Cropland Used For Crops", deltaCroplandForCrops);
+            
+            Integer deltaCroplandForPasture = 
+                    v.get(1).getCroplandUsedForPasture() - v.get(0).getCroplandUsedForPasture();
+            landUseDeltas.put("Cropland Used For Pasture", deltaCroplandForPasture);
+            
+            Integer deltaCroplandIdled = 
+                    v.get(1).getCroplandIdled() - v.get(0).getCroplandIdled();
+            landUseDeltas.put("Cropland Idled", deltaCroplandIdled);
+            
+            Integer deltaGrasslandPastureAndRange = 
+                    v.get(1).getGrasslandPastureAndRange() - v.get(0).getGrasslandPastureAndRange();
+            landUseDeltas.put("Grassland Pasture And Range", deltaGrasslandPastureAndRange);
+            
+            Integer deltaForestUseLandGrazed =
+                    v.get(1).getForestUseLandGrazed() - v.get(0).getForestUseLandGrazed();
+            landUseDeltas.put("Forest Use Land Grazed", deltaForestUseLandGrazed);
+            
+            Integer deltaForestUseLandNotGrazed =
+                    v.get(1).getForestUseLandNotGrazed() - v.get(0).getForestUseLandNotGrazed();
+            landUseDeltas.put("Forest Use Land Not Grazed", deltaForestUseLandNotGrazed);
+            
+            Integer deltaLandInRuralTransportationFacilities =
+                    v.get(1).getLandInRuralTransportationFacilities() - v.get(0).getLandInRuralTransportationFacilities();
+            landUseDeltas.put("Land In Rural Transportation Facilities", deltaLandInRuralTransportationFacilities);
+            
+            Integer deltaLandInRuralParksAndWildlifeAreas =
+                    v.get(1).getLandInRuralParksAndWildlifeAreas() - v.get(0).getLandInRuralParksAndWildlifeAreas();
+            landUseDeltas.put("Land In Rural Parks And Wildlife Areas", deltaLandInRuralParksAndWildlifeAreas);
+            
+            Integer deltaLandInDefenseAndIndustrialAreas =
+                    v.get(1).getLandInDefenseAndIndustrialAreas() - v.get(0).getLandInDefenseAndIndustrialAreas();
+            landUseDeltas.put("Land In Defense And Industrial Areas", deltaLandInDefenseAndIndustrialAreas);
+            
+            Integer deltaFarmsteadsRoadsAndMiscellaneousFarmland =
+                    v.get(1).getFarmsteadsRoadsAndMiscellaneousFarmland() - v.get(0).getFarmsteadsRoadsAndMiscellaneousFarmland();
+            landUseDeltas.put("Farmsteads Roads And Miscellaneous Farmland", deltaFarmsteadsRoadsAndMiscellaneousFarmland);
+            
+            Integer deltaLandInUrbanAreas =
+                    v.get(1).getLandInUrbanAreas() - v.get(0).getLandInUrbanAreas();
+            landUseDeltas.put("Land In Urban Areas", deltaLandInUrbanAreas);
+            
+            Integer deltaOtherLand =
+                    v.get(1).getOtherLand() - v.get(0).getOtherLand();
+            landUseDeltas.put("Other Land", deltaOtherLand);
+            
+            System.out.println("land use deltas:" + landUseDeltas);
+            
+            
+            
+            
+            // Each region's landUseDeltas hashmaps are then added to the regionDeltas
+            // hashmap.
+            regionDeltas.put(k, landUseDeltas);
+        });
+        
+        
+        
+        // Now, I need to find the max delta for each region, and then find the
+        // region that has the maximum delta in land use.
+        HashMap<String, HashMap<String, Integer>> maxByRegion = new HashMap<String, HashMap<String, Integer>>();
+        HashMap<String, Integer> allMaxLandUseDeltas = new HashMap<String, Integer>();
+
+        // Iterate over each key,value pair in the regionDeltas hashmap.
+        regionDeltas.forEach((k,v) -> {
+            
+            // Stream the entrySet from the value in regionDeltas. The value in regionDeltas
+            // is the sub-hashmap that contains the individual land use types and values (i.e., 
+            // {Other Land = -566}).
+            // Then find the max value by comparing the absolute of that value. We need to 
+            // compare absolute values because we are looking for the largest change and that 
+            // can be either an increase (+) or a decrease (-).
+            // Then get the entry that contains the maximum value and add the key and that value 
+            // to the allMaxLandUseDeltas hashmap.
+            // Finally, add the region name/key and the allMaxLandUseDeltas sub-hashmap to the 
+            // external hashmap. This external hashmap shows the maximum land use change type and 
+            // value for each region (i.e., {Pacific Northwest = {Forest Use Land Not Grazed = 12,419}}).
+            Entry<String, Integer> maxLandUseDelta = 
+                    v.entrySet().stream()
+                    .max(Map.Entry.comparingByValue(Comparator.comparing(e1 -> Math.abs(e1))))
+                    .get();
+            
+            System.out.println("MaxLandUseDelta:" + maxLandUseDelta);
+            
+            allMaxLandUseDeltas.put(maxLandUseDelta.getKey(), maxLandUseDelta.getValue());
+
+            maxByRegion.put(k, allMaxLandUseDeltas);
+            });
+              
+        
+        System.out.println(regionDeltas);
+        System.out.println(maxByRegion);
+        return "testing";
          
     }
     
@@ -218,19 +349,23 @@ public class LandUseData5QuestionAnalysis {
         
         // Call findRegionMaxGrasslandPasture1974() to answer question 1.
         // Output the result to the console.
-        System.out.println("Question 1: " + findRegionMaxGrasslandPasture1974(processedData));
+//        System.out.println("Question 1: " + findRegionMaxGrasslandPasture1974(processedData));
         
         // Call findRegionsUrbanLand2000Prior1987() to answer question 2.
         // Output the result to the console.
-        System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData));
+//        System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData));
     
         // Call findAverageCroplandForPasturePacificMountain1964() to answer question 3.
         // Output result to the console.
-        System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData));
+//        System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData));
    
         // Call findMaxForestUseland13Colonies2012 to answer question 4. 
         // Output result to console.
-        System.out.println("Question 4: " + findMaxForestUseland13Colonies2012(processedData));
+//        System.out.println("Question 4: " + findMaxForestUseland13Colonies2012(processedData));
+    
+        // Call findRegionMaxShiftLandUse1945To2012 to answer question 5. 
+        // Output result to console. 
+        System.out.println("Question 5: " + findRegionMaxShiftLandUse1945To2012(processedData) );
     }
 
 }
