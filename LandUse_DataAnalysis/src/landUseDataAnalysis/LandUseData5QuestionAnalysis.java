@@ -1,6 +1,7 @@
 package landUseDataAnalysis;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -195,10 +196,15 @@ public class LandUseData5QuestionAnalysis {
      * Please explain your reasoning, including the data that you used to reach 
      * that conclusion.
      * 
+     * Please note: There is a lot of room for improvement/refactoring in this code. 
+     * It seems like better use of Streams and the creation of intermediary objects 
+     * to stream instead of hashmaps of hashmaps would be a better solution. 
+     * 
      * @param  List, processed LandUseDataLineItem objects.
-     * @return String, name of region with largest shift in land use.
+     * @return RegionMaxLandUseDelta object, object instance representing the 
+     * region with largest shift in land use between 1945 and 2012.
      */
-    public static String findRegionMaxShiftLandUse1945To2012(List<LandUseDataLineItem> processedData) {
+    public static RegionMaxLandUseDelta findRegionMaxShiftLandUse1945To2012(List<LandUseDataLineItem> processedData) {
         
         Map<String, List<LandUseDataLineItem>> regionTotal19452012 = 
                 processedData.stream()
@@ -210,14 +216,20 @@ public class LandUseData5QuestionAnalysis {
         // Creating a hashmap with an inner hashmap. Inner hashmap will hold the delta 
         // between the 2012 and 1945 land values. External hashmap will link these values
         // to their appropriate region. 
+        // IMPORTANT: The inner HashMap is initialized within the forEach loop below, so that
+        // it's values are reset with each iteration of the loop. This ensures that the 
+        // deltas calculated for each region are saved correctly in the external hashmap. If 
+        // you don't initialize within the loop, each subsequent iteration will replace the 
+        // previous, and you'll have duplicate data. 
         // Attribution: https://coderanch.com/t/570043/java/Populating-HashMaps-HashMap-Objects
         HashMap<String, HashMap<String, Integer>> regionDeltas = new HashMap<String, HashMap<String, Integer>>();
-//        HashMap<String, Integer> landUseDeltas = new HashMap<String, Integer>();
         
         
         // Iterate over each region of the hashmap.
         regionTotal19452012.forEach((k, v) -> {
            
+            // Initialize inner hashmap to hold landUseDeltas for each region. Initializing
+            // here so that the hashmap is reset for each iteration of the forEach loop.
             HashMap<String, Integer> landUseDeltas = new HashMap<String, Integer>();
                            
             // Now, we want to find the delta between the 2012 and 1945 field values. 
@@ -280,12 +292,7 @@ public class LandUseData5QuestionAnalysis {
             Integer deltaOtherLand =
                     v.get(1).getOtherLand() - v.get(0).getOtherLand();
             landUseDeltas.put("Other Land", deltaOtherLand);
-            
-            System.out.println("land use deltas:" + landUseDeltas);
-            
-            
-            
-            
+                      
             // Each region's landUseDeltas hashmaps are then added to the regionDeltas
             // hashmap.
             regionDeltas.put(k, landUseDeltas);
@@ -295,11 +302,16 @@ public class LandUseData5QuestionAnalysis {
         
         // Now, I need to find the max delta for each region, and then find the
         // region that has the maximum delta in land use.
+        // Initialize hashmap to hold max land use changes by region (i.e., 
+        // {Pacific = {Forest Use Land Not Grazed = -28720}})
         HashMap<String, HashMap<String, Integer>> maxByRegion = new HashMap<String, HashMap<String, Integer>>();
-        HashMap<String, Integer> allMaxLandUseDeltas = new HashMap<String, Integer>();
 
         // Iterate over each key,value pair in the regionDeltas hashmap.
         regionDeltas.forEach((k,v) -> {
+            
+            // Initialize inner hashmap to hold the maximum land use change for 
+            // this region, (i.e., {Cropland Used for Crops = 4082}).
+            HashMap<String, Integer> allMaxLandUseDeltas = new HashMap<String, Integer>();
             
             // Stream the entrySet from the value in regionDeltas. The value in regionDeltas
             // is the sub-hashmap that contains the individual land use types and values (i.e., 
@@ -312,22 +324,49 @@ public class LandUseData5QuestionAnalysis {
             // Finally, add the region name/key and the allMaxLandUseDeltas sub-hashmap to the 
             // external hashmap. This external hashmap shows the maximum land use change type and 
             // value for each region (i.e., {Pacific Northwest = {Forest Use Land Not Grazed = 12,419}}).
+            
             Entry<String, Integer> maxLandUseDelta = 
                     v.entrySet().stream()
                     .max(Map.Entry.comparingByValue(Comparator.comparing(e1 -> Math.abs(e1))))
                     .get();
-            
-            System.out.println("MaxLandUseDelta:" + maxLandUseDelta);
-            
+
             allMaxLandUseDeltas.put(maxLandUseDelta.getKey(), maxLandUseDelta.getValue());
 
             maxByRegion.put(k, allMaxLandUseDeltas);
-            });
-              
+        });
         
-        System.out.println(regionDeltas);
-        System.out.println(maxByRegion);
-        return "testing";
+        // Create a list to hold instances of the RegionMaxLandUseDelta objects.
+        // From the maxbyRegion hashmap, I am creating object instances that 
+        // contain the maximum land use delta and the land type for this maximum 
+        // delta for each region. Creating these objects allows me to easily find 
+        // the region with the maximum shift in land use between 1945 and 2012.
+        List<RegionMaxLandUseDelta> RegionMaxLandUseDeltaObjects = new ArrayList<>();
+        
+        // Iterate over the maxByRegion hashmap.
+        maxByRegion.forEach((k,v) -> {
+            
+            // Then, iterate over the sub-hashmap that contains the land type and the 
+            // land use delta.
+            v.forEach((key, value) -> {
+                
+                // Create new instances of RegionMaxLandUseDelta and add these to the 
+                // list.
+                RegionMaxLandUseDelta RegionMaxLandUseDeltaInstance = 
+                        new RegionMaxLandUseDelta(value, key, k);
+                RegionMaxLandUseDeltaObjects.add(RegionMaxLandUseDeltaInstance);
+            });
+        });
+        
+        // Now, we can stream the list of RegionMaxLandUseDelta objects, and 
+        // find the maximum land use delta by using a Comparator that looks at 
+        // the MaxLandValue() field.
+        // Then, get the object instance with the maximum shift and return it.
+        RegionMaxLandUseDelta regionMaxLandUseDelta19452012 = 
+                RegionMaxLandUseDeltaObjects.stream()
+                .max(Comparator.comparing(dataInstance -> dataInstance.getMaxLandValue()))
+                .get();
+       
+        return regionMaxLandUseDelta19452012;
          
     }
     
@@ -349,23 +388,23 @@ public class LandUseData5QuestionAnalysis {
         
         // Call findRegionMaxGrasslandPasture1974() to answer question 1.
         // Output the result to the console.
-//        System.out.println("Question 1: " + findRegionMaxGrasslandPasture1974(processedData));
+        System.out.println("Question 1: " + findRegionMaxGrasslandPasture1974(processedData) + "\n");
         
         // Call findRegionsUrbanLand2000Prior1987() to answer question 2.
         // Output the result to the console.
-//        System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData));
+        System.out.println("Question 2: " + findRegionsUrbanLand2000Prior1987(processedData)+ "\n");
     
         // Call findAverageCroplandForPasturePacificMountain1964() to answer question 3.
         // Output result to the console.
-//        System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData));
+        System.out.println("Question 3: " + findAverageCroplandForPasturePacificMountain1964(processedData)+ "\n");
    
         // Call findMaxForestUseland13Colonies2012 to answer question 4. 
         // Output result to console.
-//        System.out.println("Question 4: " + findMaxForestUseland13Colonies2012(processedData));
+        System.out.println("Question 4: " + findMaxForestUseland13Colonies2012(processedData)+ "\n");
     
         // Call findRegionMaxShiftLandUse1945To2012 to answer question 5. 
         // Output result to console. 
-        System.out.println("Question 5: " + findRegionMaxShiftLandUse1945To2012(processedData) );
+        System.out.println("Question 5: " + findRegionMaxShiftLandUse1945To2012(processedData) + "\n");
     }
 
 }
