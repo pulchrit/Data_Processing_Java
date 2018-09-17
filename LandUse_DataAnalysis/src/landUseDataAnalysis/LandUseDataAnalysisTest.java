@@ -453,4 +453,29 @@ public class LandUseDataAnalysisTest {
         assertEquals("Georgia", LandUseData5QuestionAnalysis
                 .findMaxForestUseland13Colonies2012(processedData));
     }
+    
+    /**
+     * Test LandUseData5QuestionAnalysis.java's findRegionMaxShiftLandUse1945To2012
+     * method.
+     * 
+     * Filtered, sorted, found difference and ran MAX(ABS) formulas in excel to 
+     * determine the correct answer of Southeast region, Forest Use Land Not Grazed, 
+     * 54,100 acres. 
+     * @throws IOException
+     */
+    @Test
+    public void findRegionMaxShiftLandUse1945To2012Test() throws IOException {
+        // Call processData method and get List of LandUseDataLineItem objects.
+        List<LandUseDataLineItem> processedData = LandUseDataProcessing
+                .processData("/Users/pulchrit/ada/C11_App_DataAnalysis/LandUse_DataAnalysis/src/USDA_MajorLandUse_1945-2012.csv");
+    
+        // Assert the findRegionMaxShiftLandUse1945To2012 method returns 
+        // a RegionMaxLandUseDelta object with a maxRegion of Southeast total, maxLandUseType 
+        // of Forest Use Land Not Grazed, and maxLandUseValue of 54100.
+        RegionMaxLandUseDelta RegionMaxLandUseDeltaInstance = LandUseData5QuestionAnalysis
+                .findRegionMaxShiftLandUse1945To2012(processedData);
+        assertEquals("Southeast total", RegionMaxLandUseDeltaInstance.getMaxRegion());
+        assertEquals("Forest Use Land Not Grazed", RegionMaxLandUseDeltaInstance.getMaxLandType());
+        assertEquals(54100, RegionMaxLandUseDeltaInstance.getMaxLandValue());
+    }
 }

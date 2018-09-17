@@ -206,6 +206,15 @@ public class LandUseData5QuestionAnalysis {
      */
     public static RegionMaxLandUseDelta findRegionMaxShiftLandUse1945To2012(List<LandUseDataLineItem> processedData) {
         
+        /* Make a stream of processed data.
+         * Filter for Regions that DO contain the word "total" as this
+         * will exclude individual state line item which we don't need 
+         * to answer this question.
+         * Filter for the years 1945 and 2012.
+         * Collect output to map with String/Region for keys and a list of
+         * LandUseDataLineItem instances for values, 
+         * (i.e.,  {Region = [instance, instance, etc.]}).
+         */
         Map<String, List<LandUseDataLineItem>> regionTotal19452012 = 
                 processedData.stream()
                 .filter(dataInstance -> dataInstance.getRegion().contains("total"))
